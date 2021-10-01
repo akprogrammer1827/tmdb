@@ -17,6 +17,14 @@ class ApiConnection {
     print("moviesListModel Performance $moviesListModel");
     return moviesListModel;
   }
+  Future<MoviesListModel> getSimilarMovies(int page,String movieId) async {
+    var response = await http.get(Uri.parse("https://api.themoviedb.org/3/movie/$movieId/similar?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&page=$page"));
+    var result = json.decode(response.body);
+    MoviesListModel moviesListModel;
+    moviesListModel = MoviesListModel.fromJson(result);
+    print("moviesListModel Performance $moviesListModel");
+    return moviesListModel;
+  }
 
 
   Future<MovieDetailModel> getMovieDetail(String movieId) async {

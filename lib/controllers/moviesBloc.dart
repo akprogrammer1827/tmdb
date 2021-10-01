@@ -9,9 +9,7 @@ class MoviesController {
   final _apiConnection = ApiConnection();
 
   final _nowPlayingMoviesController = StreamController<MoviesListModel>.broadcast();
-
   Stream<MoviesListModel> get nowPlayingMoviesStream => _nowPlayingMoviesController.stream;
-
   fetchNowPlayingMovies(int page) async {
     try {
       final results = await _apiConnection.getNowPlayingMovies(page);
@@ -24,8 +22,23 @@ class MoviesController {
     }
   }
 
+  final _similarMoviesController = StreamController<MoviesListModel>.broadcast();
+  Stream<MoviesListModel> get similarMoviesStream => _similarMoviesController.stream;
+  fetchNowSimilarMovies(int page,String movieId) async {
+    try {
+      final results = await _apiConnection.getSimilarMovies(page,movieId);
+      _similarMoviesController.sink.add(results);
+      print("similar movies ${results.results}");
+
+    } on Exception catch (e) {
+      print(e.toString());
+      _similarMoviesController.sink.addError("something went wrong ${e.toString()}");
+    }
+  }
+
   dispose (){
     _nowPlayingMoviesController.close();
+    _similarMoviesController.close();
   }
 
 }
