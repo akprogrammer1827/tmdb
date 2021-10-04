@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:tmdb/models/imageModel.dart';
 import 'package:tmdb/models/movieDetailsModel.dart';
 import 'package:tmdb/models/moviesModel.dart';
 import 'package:http/http.dart' as http;
@@ -34,6 +36,18 @@ class ApiConnection {
     movieDetailModel = MovieDetailModel.fromJson(result);
     print("moviesDetailModel Performance $movieDetailModel");
     return movieDetailModel;
+  }
+
+
+  Future<ImagesModel> getTrendingImages() async {
+    var response = await http.get(Uri.parse("https://api.pexels.com/v1/curated?per_page=80"),headers: {
+      "Authorization" : "563492ad6f917000010000016ad5fa274c9a495daa94377b240b2a5b"
+    });
+    var result = json.decode(response.body);
+    ImagesModel imagesModel;
+    imagesModel = ImagesModel.fromJson(result);
+    print("imagesModel Performance $imagesModel");
+    return imagesModel;
   }
 
 
