@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:tmdb/models/featureCollectionModel.dart';
+import 'package:tmdb/models/imageDetailModel.dart';
 import 'package:tmdb/models/imageModel.dart';
 import 'package:tmdb/models/movieDetailsModel.dart';
 import 'package:tmdb/models/moviesModel.dart';
@@ -50,9 +53,56 @@ class ApiConnection {
     return imagesModel;
   }
 
+  Future<ImagesModel> getSearchImages(String searchText) async {
+    var response = await http.get(Uri.parse("https://api.pexels.com/v1/search?query=$searchText&per_page=80"),headers: {
+      "Authorization" : "563492ad6f917000010000016ad5fa274c9a495daa94377b240b2a5b"
+    });
+    var result = json.decode(response.body);
+    ImagesModel imagesModel;
+    imagesModel = ImagesModel.fromJson(result);
+    print("imagesModel Performance $imagesModel");
+    return imagesModel;
+  }
+
+
+  Future<ImageDetailsModel> getImageDetails(String imageId) async {
+    var response = await http.get(Uri.parse("https://api.pexels.com/v1/photos/$imageId"),headers: {
+      "Authorization" : "563492ad6f917000010000016ad5fa274c9a495daa94377b240b2a5b"
+    });
+    var result = json.decode(response.body);
+    ImageDetailsModel imageDetailsModel;
+    imageDetailsModel = ImageDetailsModel.fromJson(result);
+    print("imagesDetails Model Performance $imageDetailsModel");
+    return imageDetailsModel;
+  }
+
+  Future<FeatureCollectionModel> getFeatureCollection() async {
+    var response = await http.get(Uri.parse("https://api.pexels.com/v1/collections/featured?per_page=80"),headers: {
+      "Authorization" : "563492ad6f917000010000016ad5fa274c9a495daa94377b240b2a5b"
+    });
+    var result = json.decode(response.body);
+    FeatureCollectionModel featureCollectionModel;
+    featureCollectionModel = FeatureCollectionModel.fromJson(result);
+    print("feature collection Performance $featureCollectionModel");
+    return featureCollectionModel;
+  }
 
 
 
 
 
+
+}
+
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }

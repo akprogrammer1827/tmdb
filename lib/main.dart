@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tmdb/view/featuredCollectionPage.dart';
 import 'package:tmdb/view/nowPlayingMoviesView.dart';
 import 'package:tmdb/view/trendingImagePage.dart';
 
@@ -10,10 +11,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TMDB',
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        accentColor: Colors.black
-      ),
       home:Home()
     );
   }
@@ -45,6 +42,12 @@ class _HomeState extends State<Home> {
             title: Text("Trending Images"),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>TrendingImagePage()));
+            },
+          ),
+          ListTile(
+            title: Text("Feature Collection"),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>FeatureCollectionPage()));
             },
           ),
         ],
