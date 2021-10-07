@@ -31,7 +31,6 @@ class _FeatureCollectionPageState extends State<FeatureCollectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         centerTitle: true,
         title: Text("Featured Collection"),
@@ -75,8 +74,7 @@ class _FeatureCollectionPageState extends State<FeatureCollectionPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(asyncSnapshot!.data!.collections![i].title.toString(),style: TextStyle(
-                            color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 16
+                          Text(asyncSnapshot!.data!.collections![i].title.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16
                           ),),
                           SizedBox(height: 10,),
                           Row(
@@ -88,10 +86,10 @@ class _FeatureCollectionPageState extends State<FeatureCollectionPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text("Videos",style: TextStyle(
-                                      color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16
+                                     fontWeight: FontWeight.bold,fontSize: 16
                                   ),),
                                   Text(asyncSnapshot!.data!.collections![i].videosCount.toString(),style: TextStyle(
-                                      color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16
+                                     fontWeight: FontWeight.bold,fontSize: 16
                                   ),),
 
 
@@ -102,10 +100,10 @@ class _FeatureCollectionPageState extends State<FeatureCollectionPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text("Photos",style: TextStyle(
-                                      color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16
+                                     fontWeight: FontWeight.bold,fontSize: 16
                                   ),),
                                   Text(asyncSnapshot!.data!.collections![i].photosCount.toString(),style: TextStyle(
-                                      color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16
+                                    fontWeight: FontWeight.bold,fontSize: 16
                                   ),),
                                 ],
                               ),
@@ -115,10 +113,10 @@ class _FeatureCollectionPageState extends State<FeatureCollectionPage> {
                                 children: [
 
                                   Text("All",style: TextStyle(
-                                      color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16
+                                    fontWeight: FontWeight.bold,fontSize: 16
                                   ),),
                                   Text(asyncSnapshot!.data!.collections![i].mediaCount.toString(),style: TextStyle(
-                                      color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16
+                                     fontWeight: FontWeight.bold,fontSize: 16
                                   ),),
 
                                 ],

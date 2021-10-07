@@ -7,6 +7,8 @@ import 'package:tmdb/models/imageModel.dart';
 import 'package:tmdb/models/movieDetailsModel.dart';
 import 'package:tmdb/models/moviesModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:tmdb/models/newsModel.dart';
+import 'package:tmdb/models/videosModel.dart';
 
 
 
@@ -88,9 +90,25 @@ class ApiConnection {
   }
 
 
+ Future<VideosModel> getPopularVideos(String popularVideosUrl) async {
+    var response = await http.get(Uri.parse(popularVideosUrl),headers: {
+      "Authorization" : "563492ad6f917000010000016ad5fa274c9a495daa94377b240b2a5b"
+    });
+    var result = json.decode(response.body);
+    VideosModel videosModel;
+    videosModel = VideosModel.fromJson(result);
+    print("videos Performance $videosModel");
+    return videosModel;
+  }
 
-
-
+  Future<NewsModel> getTopHeadLinesNews() async {
+    var response = await http.get(Uri.parse("https://newsapi.org/v2/top-headlines?country=in&apiKey=cbc6e3ab2dca4063a1c7548d812ba985&pageSize=100&page=1"));
+    var result = json.decode(response.body);
+    NewsModel newsModel;
+    newsModel = NewsModel.fromJson(result);
+    print("news Performance $newsModel");
+    return newsModel;
+  }
 
 }
 

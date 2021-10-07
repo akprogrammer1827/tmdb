@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tmdb/controllers/imageController.dart';
 import 'package:tmdb/models/imageModel.dart';
+import 'package:tmdb/services/apiConnection.dart';
 import 'package:tmdb/view/imageDetailPage.dart';
 import 'package:tmdb/view/searchImagesPage.dart';
 
@@ -38,11 +39,7 @@ class _TrendingImagePageState extends State<TrendingImagePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: IconThemeData(
-          color: Colors.black
-        ),
-        backgroundColor: Colors.white,
-        title: Text("Trending Images",style: TextStyle(color: Colors.black),),
+        title: Text("Trending Images"),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: Container(
@@ -97,30 +94,35 @@ class _TrendingImagePageState extends State<TrendingImagePage> {
               asyncSnapshot = s;
               return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  mainAxisExtent: 200 ,
-                  childAspectRatio: 9/16
+                  crossAxisCount: 2,
                 ),
                 physics: BouncingScrollPhysics(),
                 itemCount: asyncSnapshot!.data!.photos!.length,
                   itemBuilder: (c,i){
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return ImageDetailsPage(
-                              imageId: asyncSnapshot!.data!.photos![i].id.toString(),
+                  return  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                        return ImageDetailsPage(
+                          imageId: asyncSnapshot!.data!.photos![i].id.toString(),
+                        );
+                      }));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          asyncSnapshot!.data!.photos![i].src!.original!,
+                          loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null)
+                              return child;
+                            return Container(
+                              color: HexColor(asyncSnapshot!.data!.photos![i].avgColor.toString()),
                             );
-                          }));
-                        },
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(asyncSnapshot!.data!.photos![i].src!.portrait!)),
+                          },
+                        ),
                       ),
-                    ],
+                    ),
                   );
 
               });

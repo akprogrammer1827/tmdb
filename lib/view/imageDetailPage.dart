@@ -39,31 +39,7 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   }
 
    saveNetworkImage(String imageUrl) async {
-
-    ImageChunkEvent? loadingProgress;
-    loadingProgress == null ?  Container() : Container(
-      color: HexColor(asyncSnapshot!.data!.avgColor.toString()),
-      height: 500,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(
-              color: Colors.black,
-              value: loadingProgress.expectedTotalBytes != null ?
-              loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-            SizedBox(height: 10,),
-            Text("Downloading...")
-          ],
-        ),
-      ),
-    );
-    GallerySaver.saveImage(imageUrl, albumName: "Images",
-      toDcim: true,
-    ).then((bool? success) {
+    GallerySaver.saveImage(imageUrl,).then((bool? success) {
       setState(() {
         print('Image is saved');
         final snackBar = SnackBar(content: Text('Image Saved Successfully'));
@@ -83,12 +59,9 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
         builder: (c,s){
           if (s.connectionState != ConnectionState.active) {
             print("all connection");
-            return Container(height: 300,
-                alignment: Alignment.center,
-                child: Center(
-                  heightFactor: 50, child: CircularProgressIndicator(
-                  color: Colors.black,
-                ),));
+            return Center(
+              heightFactor: 50, child: CircularProgressIndicator(
+            ),);
           }
           else if (s.hasError) {
             print("as3 error");
@@ -115,7 +88,8 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
                       borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
                       child: Image.network(asyncSnapshot!.data!.src!.original.toString(),cacheHeight: s.data!.height,cacheWidth: s.data!.width,
                         loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) return child;
+                          if (loadingProgress == null)
+                          return child;
                           return Container(
                             color: HexColor(asyncSnapshot!.data!.avgColor.toString()),
                             height: 500,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tmdb/view/featuredCollectionPage.dart';
 import 'package:tmdb/view/nowPlayingMoviesView.dart';
+import 'package:tmdb/view/popularVideosPage.dart';
+import 'package:tmdb/view/topHeadlinesNewsPage.dart';
 import 'package:tmdb/view/trendingImagePage.dart';
 
 void main() => runApp(MyApp());
@@ -11,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TMDB',
+      theme: ThemeData.dark(),
       home:Home()
     );
   }
@@ -48,6 +51,11 @@ class _HomeState extends State<Home> {
             title: Text("Feature Collection"),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>FeatureCollectionPage()));
+            },
+          ),ListTile(
+            title: Text("Top Headlines News"),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>TopHeadlinesNewsPage()));
             },
           ),
         ],

@@ -34,7 +34,6 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text("Now Playing Movies"),
       ),
