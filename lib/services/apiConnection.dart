@@ -101,8 +101,16 @@ class ApiConnection {
     return videosModel;
   }
 
-  Future<NewsModel> getTopHeadLinesNews() async {
-    var response = await http.get(Uri.parse("https://newsapi.org/v2/top-headlines?country=in&apiKey=cbc6e3ab2dca4063a1c7548d812ba985&pageSize=100&page=1"));
+  Future<NewsModel> getTopHeadLinesNews(String country) async {
+    var response = await http.get(Uri.parse("https://newsapi.org/v2/top-headlines?country=$country&apiKey=cbc6e3ab2dca4063a1c7548d812ba985&pageSize=100&page=1"));
+    var result = json.decode(response.body);
+    NewsModel newsModel;
+    newsModel = NewsModel.fromJson(result);
+    print("news Performance $newsModel");
+    return newsModel;
+  }
+ Future<NewsModel> getSearchedNews(String keyword, String date) async {
+    var response = await http.get(Uri.parse("https://newsapi.org/v2/everything?q=$keyword&from=$date&apiKey=cbc6e3ab2dca4063a1c7548d812ba985"));
     var result = json.decode(response.body);
     NewsModel newsModel;
     newsModel = NewsModel.fromJson(result);

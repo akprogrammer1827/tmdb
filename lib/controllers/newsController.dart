@@ -11,9 +11,9 @@ class NewsController{
 
   Stream<NewsModel> get newsStream => _newsController.stream;
 
-  fetchTopHeadlinesNews() async {
+  fetchTopHeadlinesNews(String country) async {
     try {
-      final results = await _apiConnection.getTopHeadLinesNews();
+      final results = await _apiConnection.getTopHeadLinesNews(country);
       _newsController.sink.add(results);
 
     } on Exception catch (e) {
@@ -22,8 +22,24 @@ class NewsController{
     }
   }
 
+  final _searchedNewsController = StreamController<NewsModel>.broadcast();
+
+  Stream<NewsModel> get searchedNewsStream => _searchedNewsController.stream;
+
+  fetchSearchedNews(String keyword, String date) async {
+    try {
+      final results = await _apiConnection.getSearchedNews(keyword, date);
+      _searchedNewsController.sink.add(results);
+
+    } on Exception catch (e) {
+      print(e.toString());
+      _searchedNewsController.sink.addError("something went wrong ${e.toString()}");
+    }
+  }
+
   dispose(){
     _newsController.close();
+    _searchedNewsController.close();
   }
 
 }
