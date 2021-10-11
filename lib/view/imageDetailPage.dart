@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:tmdb/controllers/imageDetailsController.dart';
 import 'package:tmdb/models/imageDetailModel.dart';
 import 'package:tmdb/services/apiConnection.dart';
@@ -54,6 +55,10 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Photo"),
+        centerTitle: true,
+      ),
       body: StreamBuilder<ImageDetailsModel>(
         stream: imageDetailsController.imageDetailStream,
         builder: (c,s){
@@ -80,38 +85,41 @@ class _ImageDetailsPageState extends State<ImageDetailsPage> {
           else{
             asyncSnapshot =s;
             return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30)),
-                      child: Image.network(asyncSnapshot!.data!.src!.original.toString(),cacheHeight: s.data!.height,cacheWidth: s.data!.width,
-                        loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null)
-                          return child;
-                          return Container(
-                            color: HexColor(asyncSnapshot!.data!.avgColor.toString()),
-                            height: 500,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(
-                                    color: Colors.black,
-                                    value: loadingProgress.expectedTotalBytes != null ?
-                                    loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                  SizedBox(height: 10,),
-                                  Text("Loading...")
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      )),
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: PhotoView(imageProvider: NetworkImage(asyncSnapshot!.data!.src!.original.toString()),
+
+            loadingBuilder:(BuildContext context,ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null)
+                return Container();
+              return Container(
+                color: HexColor(asyncSnapshot!.data!.avgColor.toString()),
+                height: 500,
+                child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: Colors.black,
+                          value: loadingProgress.expectedTotalBytes != null ?
+                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                        SizedBox(height: 10,),
+                        Text("Loading...")
+                      ],
+                    ),
+                ),
+              );
+            },),
+                  ),
+
                   SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0,right: 10.0),
