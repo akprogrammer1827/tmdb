@@ -64,7 +64,8 @@ class _HomeState extends State<Home> {
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>FeatureCollectionPage()));
             },
-          ),ListTile(
+          ),
+          ListTile(
             title: Text("Top Headlines News"),
             onTap: (){
               showDialog(context: context, builder: (context){

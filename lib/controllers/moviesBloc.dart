@@ -36,9 +36,24 @@ class MoviesController {
     }
   }
 
+  final _searchedMoviesController = StreamController<MoviesListModel>.broadcast();
+  Stream<MoviesListModel> get searchedMoviesStream => _searchedMoviesController.stream;
+  fetchSearchedMovies(String keyword,int page) async {
+    try {
+      final results = await _apiConnection.getSearchedMovies(keyword, page);
+      _searchedMoviesController.sink.add(results);
+      print("similar movies ${results.results}");
+
+    } on Exception catch (e) {
+      print(e.toString());
+      _searchedMoviesController.sink.addError("something went wrong ${e.toString()}");
+    }
+  }
+
   dispose (){
     _nowPlayingMoviesController.close();
     _similarMoviesController.close();
+    _searchedMoviesController.close();
   }
 
 }

@@ -3,30 +3,27 @@ import 'package:tmdb/controllers/moviesBloc.dart';
 import 'package:tmdb/models/moviesModel.dart';
 import 'package:tmdb/services/apiConnection.dart';
 import 'package:tmdb/view/movieDetailPage.dart';
-import 'package:tmdb/view/searchedMoviePage.dart';
 
-class NowPlayingMoviesView extends StatefulWidget {
-  const NowPlayingMoviesView({Key? key}) : super(key: key);
+class SearchedMoviePage extends StatefulWidget {
+  final String? keyword;
+  const SearchedMoviePage({Key? key, this.keyword}) : super(key: key);
 
   @override
-  _NowPlayingMoviesViewState createState() => _NowPlayingMoviesViewState();
+  _SearchedMoviePageState createState() => _SearchedMoviePageState();
 }
 
-class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
-
+class _SearchedMoviePageState extends State<SearchedMoviePage> {
 
   final MoviesController moviesController = MoviesController();
 
-  TextEditingController searchMoviesTextEditingController = TextEditingController();
   int page = 1;
-  int? next;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    moviesController.fetchNowPlayingMovies(page);
+    moviesController.fetchSearchedMovies(widget.keyword.toString(), page);
   }
 
 
@@ -40,63 +37,22 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
     super.dispose();
     moviesController.dispose();
   }
-
-  navigateMovieSearchPage(){
-
-    Navigator.push(context, MaterialPageRoute(builder: (context){
-      return SearchedMoviePage(keyword: searchMoviesTextEditingController.text,);
-    }));
-
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Now Playing Movies"),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50),
-          child: Container(
-            height: 50,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextFormField(
-                cursorColor: Colors.white,
-                controller: searchMoviesTextEditingController,
-                onEditingComplete: (){
-                  if(searchMoviesTextEditingController.text.isEmpty){
-                    print("Search any movie");
-                    final snackBar = SnackBar(content: Text('Type any movie name first',
-                      style: TextStyle(color: Colors.white),),
-                    backgroundColor: Colors.black,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  else {
-                    navigateMovieSearchPage();
-                  }
-
-                },
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: "Search movies...",
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-        ),
+        centerTitle: true,
+        title: Text(widget.keyword!),
       ),
       body: RefreshIndicator(
         color: Colors.black,
         onRefresh: (){
           return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-            return NowPlayingMoviesView();
+            return SearchedMoviePage(keyword: widget.keyword,);
           }));
         },
         child: StreamBuilder<MoviesListModel>(
-          stream: moviesController.nowPlayingMoviesStream,
+          stream: moviesController.searchedMoviesStream,
           builder: (c,s){
             if (s.connectionState != ConnectionState.active) {
               print("all connection");
@@ -139,10 +95,7 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
       ),
     );
   }
-
-
 }
-
 class MoviesTile extends StatelessWidget {
 
   final Results? results;
@@ -162,7 +115,7 @@ class MoviesTile extends StatelessWidget {
         child: Card(
           shadowColor: Colors.blueGrey,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15)
+              borderRadius: BorderRadius.circular(15)
           ),
           color: Colors.white,
           child: Padding(
@@ -191,7 +144,7 @@ class MoviesTile extends StatelessWidget {
                       results!.popularity.toString() == "" ? Text("No Popularity Available"):Text("Popularity : "+results!.popularity.toString(),style: TextStyle(color: Colors.blue,fontSize: 16,fontWeight: FontWeight.bold),),
                       SizedBox(height: 10,),
                       results!.voteAverage.toString() == "" ? Text("No Rating Available"):    Text("TMDB Rating : "+results!.voteAverage.toString()+"/10",style: TextStyle(color: Colors.green,fontSize: 16,fontWeight: FontWeight.bold),),
-                        SizedBox(height: 10,),
+                      SizedBox(height: 10,),
                       results!.voteCount.toString() == "" ? Text("No Votes Available"):    Text("Vote Count : "+results!.voteCount.toString(),style: TextStyle(color: Colors.orange,fontSize: 16,fontWeight: FontWeight.bold),)
                     ],
                   ),
