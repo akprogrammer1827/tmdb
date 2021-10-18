@@ -10,6 +10,7 @@ class MoviesController {
 
   final _nowPlayingMoviesController = StreamController<MoviesListModel>.broadcast();
   Stream<MoviesListModel> get nowPlayingMoviesStream => _nowPlayingMoviesController.stream;
+
   fetchNowPlayingMovies(int page) async {
     try {
       final results = await _apiConnection.getNowPlayingMovies(page);
@@ -19,6 +20,50 @@ class MoviesController {
     } on Exception catch (e) {
       print(e.toString());
       _nowPlayingMoviesController.sink.addError("something went wrong ${e.toString()}");
+    }
+  }
+
+  final _upcomingMoviesController = StreamController<MoviesListModel>.broadcast();
+  Stream<MoviesListModel> get upcomingMoviesStream => _upcomingMoviesController.stream;
+
+  fetchUpcomingMovies(int page) async {
+    try {
+      final results = await _apiConnection.getUpcomingMovies(page);
+      _upcomingMoviesController.sink.add(results);
+      print("now playing movies ${results.results}");
+
+    } on Exception catch (e) {
+      print(e.toString());
+      _upcomingMoviesController.sink.addError("something went wrong ${e.toString()}");
+    }
+  }
+
+  final _topRatedMoviesController = StreamController<MoviesListModel>.broadcast();
+  Stream<MoviesListModel> get topRatedMoviesStream => _topRatedMoviesController.stream;
+  fetchTopRatedMovies(int page) async {
+    try {
+      final results = await _apiConnection.getTopRatedMovies(page);
+      _topRatedMoviesController.sink.add(results);
+      print("_topRatedMoviesController ${results.results}");
+
+    } on Exception catch (e) {
+      print(e.toString());
+      _topRatedMoviesController.sink.addError("something went wrong ${e.toString()}");
+    }
+  }
+
+
+  final _popularMoviesController = StreamController<MoviesListModel>.broadcast();
+  Stream<MoviesListModel> get popularMoviesStream => _popularMoviesController.stream;
+  fetchPopularMovies(int page) async {
+    try {
+      final results = await _apiConnection.getPopularMovies(page);
+      _popularMoviesController.sink.add(results);
+      print("now playing movies ${results.results}");
+
+    } on Exception catch (e) {
+      print(e.toString());
+      _popularMoviesController.sink.addError("something went wrong ${e.toString()}");
     }
   }
 
@@ -54,6 +99,9 @@ class MoviesController {
     _nowPlayingMoviesController.close();
     _similarMoviesController.close();
     _searchedMoviesController.close();
+    _popularMoviesController.close();
+    _topRatedMoviesController.close();
+    _upcomingMoviesController.close();
   }
 
 }

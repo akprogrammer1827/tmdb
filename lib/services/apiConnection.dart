@@ -24,6 +24,31 @@ class ApiConnection {
     print("moviesListModel Performance $moviesListModel");
     return moviesListModel;
   }
+  Future<MoviesListModel> getUpcomingMovies(int page) async {
+    var response = await http.get(Uri.parse("https://api.themoviedb.org/3/movie/upcoming?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&page=$page"));
+    var result = json.decode(response.body);
+    MoviesListModel moviesListModel;
+    moviesListModel = MoviesListModel.fromJson(result);
+    print("moviesListModel Performance $moviesListModel");
+    return moviesListModel;
+  }
+  Future<MoviesListModel> getTopRatedMovies(int page) async {
+    var response = await http.get(Uri.parse("https://api.themoviedb.org/3/movie/top_rated?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&page=$page"));
+    var result = json.decode(response.body);
+    MoviesListModel moviesListModel;
+    moviesListModel = MoviesListModel.fromJson(result);
+    print("moviesListModel Performance $moviesListModel");
+    return moviesListModel;
+  }
+
+  Future<MoviesListModel> getPopularMovies(int page) async {
+    var response = await http.get(Uri.parse("https://api.themoviedb.org/3/movie/popular?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&page=$page"));
+    var result = json.decode(response.body);
+    MoviesListModel moviesListModel;
+    moviesListModel = MoviesListModel.fromJson(result);
+    print("moviesListModel Performance $moviesListModel");
+    return moviesListModel;
+  }
 
   Future<MoviesListModel> getSearchedMovies(String keyword,int page) async {
     var response = await http.get(Uri.parse("https://api.themoviedb.org/3/search/movie?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&query=$keyword&page=$page"));

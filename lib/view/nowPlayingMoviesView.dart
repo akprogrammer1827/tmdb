@@ -27,6 +27,9 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
     super.initState();
 
     moviesController.fetchNowPlayingMovies(page);
+    moviesController.fetchPopularMovies(page);
+    moviesController.fetchTopRatedMovies(page);
+    moviesController.fetchUpcomingMovies(page);
   }
 
 
@@ -54,7 +57,8 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Now Playing Movies"),
+        title: Text("Movies"),
+        centerTitle: true,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: Container(
@@ -89,52 +93,204 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
         ),
       ),
       body: RefreshIndicator(
-        color: Colors.black,
+        color: Colors.white,
         onRefresh: (){
           return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
             return NowPlayingMoviesView();
           }));
         },
-        child: StreamBuilder<MoviesListModel>(
-          stream: moviesController.nowPlayingMoviesStream,
-          builder: (c,s){
-            if (s.connectionState != ConnectionState.active) {
-              print("all connection");
-              return Container(height: 300,
-                  alignment: Alignment.center,
-                  child: Center(
-                    heightFactor: 50, child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),));
-            }
-            else if (s.hasError) {
-              print("as3 error");
-              return Container(height: 300,
-                alignment: Alignment.center,
-                child: Text("Error Loading Data",),);
-            }
-            else if (s.data
-                .toString()
-                .isEmpty) {
-              print("as3 empty");
-              return Container(height: 300,
-                alignment: Alignment.center,
-                child: Text("No Data Found",),);
-            }
-            else {
-              asyncSnapshot = s;
-              return SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    ...List.generate(s.data!.results!.length, (index) {
-                      return MoviesTile(results: asyncSnapshot!.data!.results![index],imageUrl: ApiConnection.imageBaseUrl,);
-                    })
-                  ],
-                ),
-              );
-            }
-          },
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,top: 10,bottom: 10),
+                child: Text("Now Playing Movies",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
+              ),
+              StreamBuilder<MoviesListModel>(
+                stream: moviesController.nowPlayingMoviesStream,
+                builder: (c,s){
+                  if (s.connectionState != ConnectionState.active) {
+                    print("all connection");
+                    return Container(height: 300,
+                        alignment: Alignment.center,
+                        child: Center(
+                          heightFactor: 50, child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),));
+                  }
+                  else if (s.hasError) {
+                    print("as3 error");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("Error Loading Data",),);
+                  }
+                  else if (s.data
+                      .toString()
+                      .isEmpty) {
+                    print("as3 empty");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("No Data Found",),);
+                  }
+                  else {
+                    asyncSnapshot = s;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ...List.generate(s.data!.results!.length, (index) {
+                            return MoviesTile(results: asyncSnapshot!.data!.results![index],imageUrl: ApiConnection.imageBaseUrl,);
+                          })
+                        ],
+
+                      ),
+                    );
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,top: 10,bottom: 10),
+                child: Text("Popular Movies",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
+              ),
+              StreamBuilder<MoviesListModel>(
+                stream: moviesController.popularMoviesStream,
+                builder: (c,s){
+                  if (s.connectionState != ConnectionState.active) {
+                    print("all connection");
+                    return Container(height: 300,
+                        alignment: Alignment.center,
+                        child: Center(
+                          heightFactor: 50, child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),));
+                  }
+                  else if (s.hasError) {
+                    print("as3 error");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("Error Loading Data",),);
+                  }
+                  else if (s.data
+                      .toString()
+                      .isEmpty) {
+                    print("as3 empty");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("No Data Found",),);
+                  }
+                  else {
+                    asyncSnapshot = s;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          children: [
+                            ...List.generate(s.data!.results!.length, (index) {
+                              return MoviesTile(results: asyncSnapshot!.data!.results![index],imageUrl: ApiConnection.imageBaseUrl,);
+                            })
+                          ],
+
+                      ),
+                    );
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,top: 10,bottom: 10),
+                child: Text("Top Rated Movies",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
+              ),
+              StreamBuilder<MoviesListModel>(
+                stream: moviesController.topRatedMoviesStream,
+                builder: (c,s){
+                  if (s.connectionState != ConnectionState.active) {
+                    print("all connection");
+                    return Container(height: 300,
+                        alignment: Alignment.center,
+                        child: Center(
+                          heightFactor: 50, child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),));
+                  }
+                  else if (s.hasError) {
+                    print("as3 error");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("Error Loading Data",),);
+                  }
+                  else if (s.data
+                      .toString()
+                      .isEmpty) {
+                    print("as3 empty");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("No Data Found",),);
+                  }
+                  else {
+                    asyncSnapshot = s;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          children: [
+                            ...List.generate(s.data!.results!.length, (index) {
+                              return MoviesTile(results: asyncSnapshot!.data!.results![index],imageUrl: ApiConnection.imageBaseUrl,);
+                            })
+                          ],
+
+                      ),
+                    );
+                  }
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,top: 10,bottom: 10),
+                child: Text("UpComing Movies",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
+              ),
+              StreamBuilder<MoviesListModel>(
+                stream: moviesController.upcomingMoviesStream,
+                builder: (c,s){
+                  if (s.connectionState != ConnectionState.active) {
+                    print("all connection");
+                    return Container(height: 300,
+                        alignment: Alignment.center,
+                        child: Center(
+                          heightFactor: 50, child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),));
+                  }
+                  else if (s.hasError) {
+                    print("as3 error");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("Error Loading Data",),);
+                  }
+                  else if (s.data
+                      .toString()
+                      .isEmpty) {
+                    print("as3 empty");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("No Data Found",),);
+                  }
+                  else {
+                    asyncSnapshot = s;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          children: [
+                            ...List.generate(s.data!.results!.length, (index) {
+                              return MoviesTile(results: asyncSnapshot!.data!.results![index],imageUrl: ApiConnection.imageBaseUrl,);
+                            })
+                          ],
+
+                      ),
+                    );
+                  }
+                },
+              ),
+              SizedBox(height: 20,)
+            ],
+          ),
         ),
       ),
     );
@@ -162,40 +318,43 @@ class MoviesTile extends StatelessWidget {
         child: Card(
           shadowColor: Colors.blueGrey,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15)
+              borderRadius: BorderRadius.circular(15),
+
           ),
           color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+          child: Container(
+            width: 130,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                    flex: 1,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: results!.posterPath == null ? Image.asset("images/image_not_available.png"): Image.network(
-                          imageUrl+results!.posterPath,
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: results!.posterPath == null ? Image.asset("images/image_not_available.png",fit: BoxFit.contain,): Image.network(
+                      imageUrl+results!.posterPath,
+                      fit: BoxFit.contain,
+                      width: MediaQuery.of(context).size.width,
 
-                        ))),
-                SizedBox(width: 10,),
-                Flexible(
-                  flex: 2,
+
+                    )),
+               /* SizedBox(height: 10,),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0,right: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      results!.title == "" ? Text("No Title Available"):Text(results!.title.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),),
+                      results!.title == "" ? Text("No Title Available"):Text(results!.title.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: Colors.black),),
                       SizedBox(height: 10,),
-                      results!.popularity.toString() == "" ? Text("No Popularity Available"):Text("Popularity : "+results!.popularity.toString(),style: TextStyle(color: Colors.blue,fontSize: 16,fontWeight: FontWeight.bold),),
+                      results!.popularity.toString() == "" ? Text("No Popularity Available"):Text("Popularity : "+results!.popularity.toString(),style: TextStyle(color: Colors.blue,fontSize: 10,fontWeight: FontWeight.bold),),
                       SizedBox(height: 10,),
-                      results!.voteAverage.toString() == "" ? Text("No Rating Available"):    Text("TMDB Rating : "+results!.voteAverage.toString()+"/10",style: TextStyle(color: Colors.green,fontSize: 16,fontWeight: FontWeight.bold),),
-                        SizedBox(height: 10,),
-                      results!.voteCount.toString() == "" ? Text("No Votes Available"):    Text("Vote Count : "+results!.voteCount.toString(),style: TextStyle(color: Colors.orange,fontSize: 16,fontWeight: FontWeight.bold),)
+                      results!.voteAverage.toString() == "" ? Text("No Rating Available"):    Text("TMDB Rating : "+results!.voteAverage.toString()+"/10",style: TextStyle(color: Colors.green,fontSize: 10,fontWeight: FontWeight.bold),),
+                      SizedBox(height: 10,),
+                      results!.voteCount.toString() == "" ? Text("No Votes Available"):    Text("Vote Count : "+results!.voteCount.toString(),style: TextStyle(color: Colors.orange,fontSize: 10,fontWeight: FontWeight.bold),),
+                      SizedBox(height: 10,),
                     ],
                   ),
-                )
+                )*/
 
               ],
             ),
