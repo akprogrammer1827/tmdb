@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tmdb/view/featuredCollectionPage.dart';
-import 'package:tmdb/view/nowPlayingMoviesView.dart';
+import 'package:tmdb/view/moviesView.dart';
 import 'package:tmdb/view/popularVideosPage.dart';
 import 'package:tmdb/view/topHeadlinesNewsPage.dart';
 import 'package:tmdb/view/trendingImagePage.dart';
@@ -48,9 +48,9 @@ class _HomeState extends State<Home> {
       body: ListView(
         children: [
           ListTile(
-            title: Text("Now Playing Movies"),
+            title: Text("Movies"),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>NowPlayingMoviesView()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>MoviesView()));
             },
           ),
           ListTile(

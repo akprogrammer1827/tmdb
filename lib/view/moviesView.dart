@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:tmdb/controllers/moviesBloc.dart';
+import 'package:tmdb/controllers/people_Controllers.dart';
 import 'package:tmdb/models/moviesModel.dart';
+import 'package:tmdb/models/people_model.dart';
 import 'package:tmdb/services/apiConnection.dart';
-import 'package:tmdb/view/movieDetailPage.dart';
 import 'package:tmdb/view/searchedMoviePage.dart';
+import 'package:tmdb/view/widget/people_tile.dart';
+import 'package:tmdb/view/widget/movie_tile.dart';
 
-class NowPlayingMoviesView extends StatefulWidget {
-  const NowPlayingMoviesView({Key? key}) : super(key: key);
+class MoviesView extends StatefulWidget {
+  const MoviesView({Key? key}) : super(key: key);
 
   @override
-  _NowPlayingMoviesViewState createState() => _NowPlayingMoviesViewState();
+  _MoviesViewState createState() => _MoviesViewState();
 }
 
-class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
+class _MoviesViewState extends State<MoviesView> {
 
 
   final MoviesController moviesController = MoviesController();
+  final PeopleController peopleController = PeopleController();
 
   TextEditingController searchMoviesTextEditingController = TextEditingController();
   int page = 1;
@@ -30,18 +34,21 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
     moviesController.fetchPopularMovies(page);
     moviesController.fetchTopRatedMovies(page);
     moviesController.fetchUpcomingMovies(page);
+    peopleController.fetchPopularPeople(page);
   }
 
 
 
 
   AsyncSnapshot<MoviesListModel>? asyncSnapshot;
+  AsyncSnapshot<PeopleModel>? asyncSnapshot1;
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     moviesController.dispose();
+    peopleController.dispose();
   }
 
   navigateMovieSearchPage(){
@@ -96,7 +103,7 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
         color: Colors.white,
         onRefresh: (){
           return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-            return NowPlayingMoviesView();
+            return MoviesView();
           }));
         },
         child: SingleChildScrollView(
@@ -104,6 +111,52 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,top: 10,bottom: 10),
+                child: Text("Popular People",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
+              ),
+              StreamBuilder<PeopleModel>(
+                stream: peopleController.popularPeopleStream,
+                builder: (c,s){
+                  if (s.connectionState != ConnectionState.active) {
+                    print("all connection");
+                    return Container(height: 300,
+                        alignment: Alignment.center,
+                        child: Center(
+                          heightFactor: 50, child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),));
+                  }
+                  else if (s.hasError) {
+                    print("as3 error");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("Error Loading Data",),);
+                  }
+                  else if (s.data
+                      .toString()
+                      .isEmpty) {
+                    print("as3 empty");
+                    return Container(height: 300,
+                      alignment: Alignment.center,
+                      child: Text("No Data Found",),);
+                  }
+                  else {
+                    asyncSnapshot1 = s;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ...List.generate(s.data!.results!.length, (index) {
+                            return PeopleTile(results: asyncSnapshot1!.data!.results![index],imageUrl: ApiConnection.imageBaseUrl,);
+                          })
+                        ],
+
+                      ),
+                    );
+                  }
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0,top: 10,bottom: 10),
                 child: Text("Now Playing Movies",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),),
@@ -299,68 +352,6 @@ class _NowPlayingMoviesViewState extends State<NowPlayingMoviesView> {
 
 }
 
-class MoviesTile extends StatelessWidget {
-
-  final Results? results;
-  final imageUrl;
-  const MoviesTile({Key? key,this.results,this.imageUrl}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 5.0,right: 5,top: 2.5,bottom: 2.5),
-      child: GestureDetector(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context){
-            return MovieDetailPage(movieId: results!.id.toString(),);
-          }));
-        },
-        child: Card(
-          shadowColor: Colors.blueGrey,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-
-          ),
-          color: Colors.white,
-          child: Container(
-            width: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: results!.posterPath == null ? Image.asset("images/image_not_available.png",fit: BoxFit.contain,): Image.network(
-                      imageUrl+results!.posterPath,
-                      fit: BoxFit.contain,
-                      width: MediaQuery.of(context).size.width,
 
 
-                    )),
-               /* SizedBox(height: 10,),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0,right: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      results!.title == "" ? Text("No Title Available"):Text(results!.title.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: Colors.black),),
-                      SizedBox(height: 10,),
-                      results!.popularity.toString() == "" ? Text("No Popularity Available"):Text("Popularity : "+results!.popularity.toString(),style: TextStyle(color: Colors.blue,fontSize: 10,fontWeight: FontWeight.bold),),
-                      SizedBox(height: 10,),
-                      results!.voteAverage.toString() == "" ? Text("No Rating Available"):    Text("TMDB Rating : "+results!.voteAverage.toString()+"/10",style: TextStyle(color: Colors.green,fontSize: 10,fontWeight: FontWeight.bold),),
-                      SizedBox(height: 10,),
-                      results!.voteCount.toString() == "" ? Text("No Votes Available"):    Text("Vote Count : "+results!.voteCount.toString(),style: TextStyle(color: Colors.orange,fontSize: 10,fontWeight: FontWeight.bold),),
-                      SizedBox(height: 10,),
-                    ],
-                  ),
-                )*/
 
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

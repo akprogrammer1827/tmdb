@@ -8,6 +8,7 @@ import 'package:tmdb/models/movieDetailsModel.dart';
 import 'package:tmdb/models/moviesModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:tmdb/models/newsModel.dart';
+import 'package:tmdb/models/people_model.dart';
 import 'package:tmdb/models/videosModel.dart';
 
 
@@ -15,6 +16,16 @@ import 'package:tmdb/models/videosModel.dart';
 class ApiConnection {
 
   static final String imageBaseUrl = "http://image.tmdb.org/t/p/w500/";
+
+
+  Future<PeopleModel> getPopularPeople(int page) async {
+    var response = await http.get(Uri.parse("https://api.themoviedb.org/3/person/popular?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&page=$page"));
+    var result = json.decode(response.body);
+    PeopleModel peopleModel;
+    peopleModel = PeopleModel.fromJson(result);
+    print("peopleModel Performance $peopleModel");
+    return peopleModel;
+  }
 
   Future<MoviesListModel> getNowPlayingMovies(int page) async {
     var response = await http.get(Uri.parse("https://api.themoviedb.org/3/movie/now_playing?api_key=b9a825a82ebe362e74f0a59439b3b6de&language=en-US&page=$page"));
