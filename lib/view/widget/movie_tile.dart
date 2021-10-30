@@ -17,7 +17,7 @@ class MoviesTile extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return MovieDetailPage(movieId: results!.id.toString(),);
+            return MovieDetailPage(movieId: results!.id.toString(),movieName: results!.title);
           }));
         },
         child: ClipRRect(
