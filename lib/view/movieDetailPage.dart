@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 import 'package:tmdb/controllers/movieDetailController.dart';
 import 'package:tmdb/controllers/moviesBloc.dart';
@@ -42,6 +45,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     moviesController.dispose();
     movieDetailController.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -391,6 +396,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           StreamBuilder<MovieDetailModel>(
             stream: movieDetailController.movieDetailStream,
@@ -432,15 +439,41 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      asyncSnapshot!.data!.backdropPath == null
-                          ? Container(
-                              color: Colors.grey.shade200,
-                              height: 200,
+                    Stack(
+                      children: [
+                        asyncSnapshot!.data!.backdropPath == null
+                            ? Container(
+                          color: Colors.grey.shade200,
+                          height: 200,
+                        )
+                            : Image.network(
+                          ApiConnection.imageBaseUrl +
+                              asyncSnapshot!.data!.backdropPath.toString(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0,right: 10),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: CircularPercentIndicator(
+                                  radius: 60.0,
+                                  lineWidth: 5.0,
+                                  percent: double.parse(asyncSnapshot!.data!.voteAverage.toString()) / 10,
+                                  center: new Text(asyncSnapshot!.data!.voteAverage.toString()+"%",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                                  progressColor: Colors.green,
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(60)
+                              ),
                             )
-                          : Image.network(
-                              ApiConnection.imageBaseUrl +
-                                  asyncSnapshot!.data!.backdropPath.toString(),
-                            ),
+                          ),
+                        )
+                      ],
+                    ),
                       SizedBox(
                         height: 10,
                       ),
@@ -484,28 +517,40 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),),
                                     SizedBox(height: 10),
-                                    ReadMoreText(
-                                      asyncSnapshot!.data!.overview == null
-                                          ? "Overview"
-                                          : asyncSnapshot!.data!.overview
-                                              .toString(),
-                                      trimLines: 4,
-                                     style: TextStyle(
-                                         fontSize: 12,
-                                         color: Colors.white,
-                                         letterSpacing: 0.8,
-                                         fontWeight: FontWeight.w300),
-                                      trimMode: TrimMode.Line,
-                                      trimCollapsedText: 'read more',
-                                      trimExpandedText: 'read less',
-                                      lessStyle: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.orange,
-                                          fontWeight: FontWeight.bold),
-                                      moreStyle: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.orange,
-                                          fontWeight: FontWeight.bold),
+                                    Container(
+                                      height:100,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SingleChildScrollView(
+                                          child: ReadMoreText(
+                                            asyncSnapshot!.data!.overview == null
+                                                ? "Overview"
+                                                : asyncSnapshot!.data!.overview
+                                                    .toString(),
+                                            trimLines: 5,
+                                           style: TextStyle(
+                                               fontSize: 12,
+                                               color: Colors.white,
+                                               letterSpacing: 0.8,
+                                               fontWeight: FontWeight.w300),
+                                            trimMode: TrimMode.Line,
+                                            trimCollapsedText: 'read more',
+                                            trimExpandedText: 'read less',
+                                            lessStyle: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.bold),
+                                            moreStyle: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.zero,
+                                        border: Border.all(color: Colors.white)
+                                      ),
                                     ),
                                     SizedBox(height: 10),
                                      SingleChildScrollView(
@@ -529,6 +574,161 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       SizedBox(
                         height: 10,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0,right: 10),
+                        child: GridView(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Status", style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,),),
+                                Text(asyncSnapshot!.data!.status == null
+                                    ? "_"
+                                    : asyncSnapshot!.data!.status
+                                    .toString(), style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Release Date", style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,),),
+                                Text(asyncSnapshot!.data!.releaseDate == null
+                                    ? "_"
+                                    : asyncSnapshot!.data!.releaseDate
+                                    .toString(), style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Runtime", style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,),),
+                                Text(asyncSnapshot!.data!.runtime == null
+                                    ? "_"
+                                    : asyncSnapshot!.data!.runtime.toString() + "m", style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Popularity", style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,),),
+                                Text(asyncSnapshot!.data!.popularity == null
+                                    ? "_"
+                                    : asyncSnapshot!.data!.popularity.toString(), style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Budget", style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,),),
+                                Text(asyncSnapshot!.data!.budget == null
+                                    ? "_"
+                                    : asyncSnapshot!.data!.budget
+                                    .toString()  + ".00", style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Revenue", style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,),),
+                                Text(asyncSnapshot!.data!.revenue == null
+                                    ? "_"
+                                    : asyncSnapshot!.data!.revenue
+                                    .toString()  + ".00", style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+
+
+
+                          ],
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5,
+                            mainAxisExtent: 40
+
+                          ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      asyncSnapshot!.data!.belongsToCollection == null ?    SizedBox():
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0,right: 10,top: 10,bottom: 10),
+                          child:Row(
+                            children: [
+                              Expanded(flex:2,
+                                child: asyncSnapshot!.data!.belongsToCollection!.backdropPath == null ? Container():
+                              ClipRRect(
+                                child: Image.network(ApiConnection.imageBaseUrl+ asyncSnapshot!.data!.belongsToCollection!.backdropPath.toString(),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),),
+                             Expanded(
+                               flex: 1,
+                               child: Column(
+                                 mainAxisAlignment: MainAxisAlignment.center,
+                                 crossAxisAlignment: CrossAxisAlignment.center,
+                                 children: [
+                                   ClipRRect(
+                                     borderRadius: BorderRadius.circular(10),
+                                     child:  asyncSnapshot!.data!.belongsToCollection!.posterPath == null ? Container():Image.network(ApiConnection.imageBaseUrl+ asyncSnapshot!.data!.belongsToCollection!.posterPath.toString(),width: 70,),
+                                   ),
+                                   SizedBox(height: 10,),
+                                   Text(asyncSnapshot!.data!.belongsToCollection!.name == null ? "-" :asyncSnapshot!.data!.belongsToCollection!.name.toString(),textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),),
+                                 ],
+                               ),
+                             )
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
+                        ),
+                        color: Colors.black38,
+                      ),
+
+
+
+
 
                     ],
                   ),
@@ -536,10 +736,75 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               }
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0, left: 10,bottom: 10),
+            child: Row(
+              children: [
+                Text(
+                  "Similar Movies",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+          ),
+          StreamBuilder<MoviesListModel>(
+              stream: moviesController.similarMoviesStream,
+              builder: (c, s) {
+                if (s.connectionState != ConnectionState.active) {
+                  print("all connection");
+                  return Container(
+                      height: 300,
+                      alignment: Alignment.center,
+                      child: Center(
+                        heightFactor: 50,
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      ));
+                } else if (s.hasError) {
+                  print("as3 error");
+                  return Container(
+                    height: 300,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Error Loading Data",
+                    ),
+                  );
+                } else if (s.data.toString().isEmpty) {
+                  print("as3 empty");
+                  return Container(
+                    height: 300,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "No Data Found",
+                    ),
+                  );
+                } else
+                  asyncSnapshot1 = s;
+                return asyncSnapshot1!.data!.results!.length == 0
+                    ? Container()
+                    : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: ClampingScrollPhysics(),
+                  child: Row(
+                    children: [
+                      ...List.generate(
+                          asyncSnapshot1!.data!.results!.length,
+                              (index) => MoviesTile(
+                            imageUrl: ApiConnection.imageBaseUrl,
+                            results:
+                            asyncSnapshot1!.data!.results![index],
+                          ))
+                    ],
+                  ),
+                );
+              }),
+          SizedBox(height: 30,)
         ],
       ),
     );
   }
+
 }
 
 class GenresCard extends StatelessWidget {
