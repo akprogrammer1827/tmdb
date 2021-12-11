@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:tmdb/models/distributor_dashboard_model.dart';
 import 'package:tmdb/models/featureCollectionModel.dart';
 import 'package:tmdb/models/imageDetailModel.dart';
 import 'package:tmdb/models/imageModel.dart';
@@ -25,6 +26,17 @@ class ApiConnection {
     peopleModel = PeopleModel.fromJson(result);
     print("peopleModel Performance $peopleModel");
     return peopleModel;
+  }
+
+  Future<DistributorDashboardModel> getDistributorDashboardData() async {
+    var response = await http.post(Uri.parse("http://157.90.244.223:8083/api/v1/getdashboard_details"),body: json.encode({
+      "tenantid" : 123213
+    }));
+    var result = json.decode(response.body);
+    DistributorDashboardModel distributorDashboardModel;
+    distributorDashboardModel = DistributorDashboardModel.fromJson(result);
+    print("distributorDashboardModel Performance $distributorDashboardModel");
+    return distributorDashboardModel;
   }
 
   Future<MoviesListModel> getNowPlayingMovies(int page) async {

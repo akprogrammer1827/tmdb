@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tmdb/view/distributorDashboardPage.dart';
 import 'package:tmdb/view/featuredCollectionPage.dart';
 import 'package:tmdb/view/moviesView.dart';
 import 'package:tmdb/view/popularVideosPage.dart';
@@ -63,6 +64,12 @@ class _HomeState extends State<Home> {
             title: Text("Feature Collection"),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>FeatureCollectionPage()));
+            },
+          ),
+          ListTile(
+            title: Text("Distributor Dashboard"),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>DistributorDashboardPage()));
             },
           ),
           ListTile(
